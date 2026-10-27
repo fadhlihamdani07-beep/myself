@@ -107,6 +107,13 @@ mark{background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--ink
 .pfilters button{font:500 .95rem "JetBrains Mono",ui-monospace,monospace;padding:.35rem .9rem;border-radius:2rem;border:1px solid var(--line);background:none;color:var(--ink);cursor:pointer}
 .pfilters button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .pc[hidden]{display:none}
+.pc img,.gallery img{height:14rem;aspect-ratio:auto;object-fit:cover;cursor:zoom-in;transition:filter .2s}
+.pc img:hover,.gallery img:hover{filter:brightness(1.12)}
+#lb{border:0;padding:0;background:transparent;overflow:visible;max-width:min(92vw,64rem);max-height:92vh;margin:auto;color:#e6e9ef}
+#lb::backdrop{background:rgba(5,8,12,.88);backdrop-filter:blur(4px)}
+#lb img{display:block;max-width:100%;max-height:80vh;width:auto;height:auto;margin:0 auto;border-radius:.75rem;cursor:default}
+#lb p{margin:.75rem 0 0;text-align:center;color:#e6e9ef;font:500 .85rem "JetBrains Mono",ui-monospace,monospace;max-width:none}
+#lb button{position:absolute;top:.5rem;right:.5rem;width:2.5rem;height:2.5rem;border-radius:50%;border:1px solid rgba(255,255,255,.3);background:rgba(14,17,23,.85);color:#fff;font-size:1.1rem;cursor:pointer}
 </style>
 </head>
 <body>
@@ -290,6 +297,22 @@ mark{background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--ink
 <script>
 (function(){var fb=document.querySelectorAll('.pfilters button'),cs=document.querySelectorAll('.projects .pc');
 fb.forEach(function(b){b.addEventListener('click',function(){fb.forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false')});var f=b.getAttribute('data-f');cs.forEach(function(c){c.hidden=!(f==='all'||c.getAttribute('data-c').split(' ').indexOf(f)>-1)})})})})();
+</script>
+<script>
+(function(){
+  var d=document.createElement('dialog');d.id='lb';d.setAttribute('aria-label','Photo viewer');
+  d.innerHTML='<button type="button" aria-label="Close photo">✕</button><img alt=""><p></p>';
+  document.body.appendChild(d);
+  var im=d.querySelector('img'),cp=d.querySelector('p'),cl=d.querySelector('button');
+  function open(s){im.src=s.src;im.alt=s.alt;cp.textContent=s.alt;d.showModal()}
+  document.querySelectorAll('.pc img,.gallery img').forEach(function(s){
+    s.tabIndex=0;s.setAttribute('role','button');s.setAttribute('aria-label','Enlarge photo: '+s.alt);
+    s.addEventListener('click',function(){open(s)});
+    s.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();open(s)}});
+  });
+  cl.addEventListener('click',function(){d.close()});
+  d.addEventListener('click',function(e){if(e.target===d)d.close()});
+})();
 </script>
 </body>
 </html>
